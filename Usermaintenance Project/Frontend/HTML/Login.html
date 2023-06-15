@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/CSS/loginstyle.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+
+    <title>Login Page</title>
+</head>
+<style>
+    * {
+        box-sizing: border-box;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .container {
+        margin: 0 auto;
+        width: 400px;
+        align-items: center;
+        padding: 10px;
+        margin-top: 20vh;
+    }
+
+    fieldset {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    label {
+        display: inline-block;
+        width: 110px;
+    }
+
+    input {
+        padding: 5px;
+    }
+
+    .lbl-input {
+        margin-top: 10px;
+        margin-bottom: 5px;
+    }
+
+    button {
+        margin: 0 auto;
+        display: block;
+        text-align: center;
+        margin-top: 3vh;
+    }
+</style>
+
+<body>
+
+    <div class="container">
+        <Fieldset>
+            <Legend>Login</Legend>
+            <form class="form" action="">
+                <div class="lbl-input">
+                    <label for="user-id">User id</label>
+                    <input type="text" id="user-id" placeholder="User Id *"><br>
+                </div>
+                <div class="lbl-input">
+                    <label for="pswrd">Password</label>
+                    <input type="password" id="pswrd" placeholder="Password *"><br>
+                </div>
+                <button type="submit" id="btnsubmit">Log in</button>
+            </form>
+            <div class="link">
+                <p>New User <a href="/HTML/SignUp.html">Sign Up</p>
+                </p>
+            </div>
+            <div>
+                <a href="/HTML/ForgotPassword.html">Forgot Your Password?</a>
+            </div>
+        </Fieldset>
+    </div>
+</body>
+<script>
+    localStorage.clear();
+    const URL = "https://localhost:7089/"
+    $("#btnsubmit").click(function () {
+        event.preventDefault();
+        var userid = $("#user-id").val();
+        var password = $("#pswrd").val();
+
+        if (userid == "" || userid.length < 0) {
+            alert("Please Enter a Valid UserId");
+        }
+        else if (password == "" || password.length < 0) {
+            alert("Please Enter a Valid Password");
+        }
+        else {
+
+            $.ajax({
+                url: URL + 'api/Login/UserLogin?username=' + userid + '&password=' + password,
+                type: "Post",
+                contentType: " text/plain",
+
+                //this class returns a json object
+                cache: false,
+                success: function (result) {
+                    console.log(result);
+                    localStorage.setItem('userId', result.userId);
+                    localStorage.setItem('name', result.name);
+                    localStorage.setItem('usertype', result.userType);
+
+                    window.location.href = "/HTML/index.html";
+                },
+                error: function (ex) {
+                    alert("Please try with valid Login Password")
+                }
+            })
+        }
+    });
+
+
+</script>
+
+</html>

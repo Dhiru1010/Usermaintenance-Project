@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- Datatable plugin CSS file -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css" />
+
+    <!-- jQuery library file -->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.js">
+    </script>
+
+    <!-- Datatable plugin JS library file -->
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js">
+    </script>
+</head>
+
+
+<style>
+    fieldset {
+        width: 600px;
+        margin: 0 auto;
+        margin-top: 10vh;
+        height: max-content;
+        padding-bottom: 20px;
+        margin-bottom: 40px;
+    }
+
+    legend {
+
+        font-weight: bold;
+    }
+
+
+    button {
+        height: 3vh;
+        width: auto;
+        font-weight: bold;
+        box-shadow: 5px 5px lightgrey;
+        margin: 0 10px;
+    }
+
+    button:hover {
+        background: lightcoral;
+        color: white;
+        box-shadow: 5px 5px black;
+        transition: 0.5s;
+    }
+
+    table {
+        margin-top: 2vh;
+        font-family: Arial, Helvetica, sans-serif;
+        border-collapse: collapse;
+        width: 500px;
+        margin: 0 auto;
+        height: 200px;
+    }
+
+    td,
+    th {
+        border: 1px solid grey;
+        padding: 8px;
+    }
+
+    th {
+        background-color: green;
+        color: white;
+        text-align: left;
+        padding-top: 12px;
+        padding-bottom: 12px;
+    }
+
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .navbar {
+        overflow: hidden;
+        background-color: #333;
+    }
+
+    .navbar a {
+        float: left;
+        font-size: 16px;
+        color: white;
+        text-align: center;
+        padding: 14px 16px;
+        text-decoration: none;
+    }
+
+    .dropdown {
+        float: left;
+        overflow: hidden;
+    }
+
+    .dropdown .dropbtn {
+        font-size: 16px;
+        border: none;
+        outline: none;
+        color: white;
+        padding: 14px 16px;
+        background-color: inherit;
+        font-family: inherit;
+        margin: 0;
+    }
+
+    .navbar a:hover,
+    .dropdown:hover .dropbtn {
+        background-color: red;
+    }
+
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #f9f9f9;
+        min-width: 160px;
+        box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+        z-index: 1;
+    }
+
+    .dropdown-content a {
+        float: none;
+        color: black;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+        text-align: left;
+    }
+
+    .dropdown-content a:hover {
+        background-color: #ddd;
+    }
+
+    .dropdown:hover .dropdown-content {
+        display: block;
+    }
+
+    * {
+        margin: 0;
+    }
+</style>
+
+<body>
+    <div id="bg-4">
+        <div class="navbar">
+            <a href="/HTML/index.html">Home</a>
+
+            <div class="dropdown">
+                <button class="dropbtn">Manage
+                    <i class="fa fa-caret-down"></i>
+                </button>
+                <div class="dropdown-content">
+                    <a href="/HTML/UserMaintainance.html">Geographical Infomation</a>
+                    <a href="/HTML/ManageUser.html">Users</a>
+
+                </div>
+            </div>
+            <div class="dropdown">
+                <button class="dropbtn">Account
+                    <i class="fa fa-caret-down"></i>
+                </button>
+                <div class="dropdown-content">
+                    <a href="/HTML/ManageProfile.html">Manage Profile</a>
+                    <a href="/HTML/ChangePassword.html">Change Password</a>
+
+                </div>
+            </div>
+            <a href="/HTML/Login.html" onclick="LogOut()">Log-out</a>
+        </div>
+        <!----------------------------------------------------------------------------------------------------------------------->
+        <fieldset>
+            <legend>Manage Users</legend>
+            <h3>total records are <h4 id="totalRecords"></h4>
+            </h3>
+            <table id="tableID">
+                <thead>
+                    <tr>
+                        <th> UserId</th>
+                        <th>Name</th>
+                        <th>DOB</th>
+                        <th>Email</th>
+                        <th>Mobile</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="tblbody">
+
+                </tbody>
+            </table>
+            <div style="display: flex;justify-content: flex-end; margin-top: 20px;">
+                <button id="first">first</button>
+                <button id="pre">pre</button>
+                <button id="next">next</button>
+                <button id="last">last</button>
+            </div>
+        </fieldset>
+</body>
+<script>
+    var type = localStorage.getItem('usertype');
+    if (type != "admin") {
+        $('body').hide();
+    }
+
+    function LogOut() {
+        localStorage.clear();
+        window.location.replace('/HTML/Login.html');
+    }
+    var URL = "https://localhost:7089/"
+    var pageIndex = 0;
+    var pagesize = 3;
+    var totalRecords;
+    function getdata(pageIndex, pagesize) {
+        debugger;
+        $.ajax({
+            url: URL + `api/AdminManage/UserPagination?skip=${pageIndex}&take=${pagesize}`,
+            type: "Get",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            //this class returns a json object
+            cache: false,
+            success: function (result) {
+                console.log(result);
+                if (pageIndex == 0) {
+                    $('#pre').attr('disabled', 'disabled');
+                    $('#first').attr('disabled', 'disabled');
+                    $('#next').removeAttr('disabled', 'disabled');
+                    $('#last').removeAttr('disabled', 'disabled')
+                }
+                else if (pageIndex >= ((Math.ceil(totalRecords / pagesize) * pagesize) - pagesize - 1)) {
+                    $('#pre').removeAttr('disabled', 'disabled');
+                    $('#first').removeAttr('disabled', 'disabled');
+                    $('#next').attr('disabled', 'disabled');
+                    $('#last').attr('disabled', 'disabled')
+                }
+                else {
+                    $('#pre').removeAttr('disabled', 'disabled');
+                    $('#first').removeAttr('disabled', 'disabled');
+                    $('#next').removeAttr('disabled', 'disabled');
+                    $('#last').removeAttr('disabled', 'disabled')
+                }
+
+
+                totalRecords = result.totalRecords;
+                var optionString = "";
+                for (var i = 0; i < result.users.length; i++) {
+                    optionString += `
+                        <tr>
+                            <td>${result.users[i].userId}</td>
+                            <td>${result.users[i].name}</td>
+                            <td>${result.users[i].dob}</td>
+                            <td>${result.users[i].email}</td>
+                            <td>${result.users[i].mobile}</td>
+                            <td>
+                                <div style="display: inline-block;">
+                                    <p>${result.users[i].status}</p><a href="#" id='${String(result.users[i].userId)}' onclick="EditEmployee('${String(result.users[i].userId)}')">edit</a>
+                                </div>
+                            </td>
+                        </tr>`;
+                }
+                $('#tblbody').html(optionString);
+                $('#totalRecords').text(totalRecords);
+            },
+            error: function (ex) {
+                alert("Please wait");
+            }
+        });
+
+    }
+
+    getdata(pageIndex, pagesize);
+
+    $('#first').click(function () {
+        debugger;
+        pageIndex = 0;
+        getdata(pageIndex * pagesize, pagesize);
+    });
+
+    $('#pre').click(function () {
+        debugger;
+        pageIndex--;
+        getdata(pageIndex * pagesize, pagesize);
+    });
+
+    $('#next').click(function () {
+        debugger;
+        pageIndex++;
+        getdata(pageIndex * pagesize, pagesize);
+    });
+
+    $('#last').click(function () {
+        debugger;
+        pageIndex = Math.ceil(totalRecords / pagesize) - 1;
+        getdata(pageIndex * pagesize, pagesize);
+    });
+
+    function EditEmployee(id) {
+        debugger;
+        $.ajax({
+            url: URL + "api/AdminManage/ChangeUserStatus?userId=" + id,
+            type: "Post",
+            contentType: "application/json; charset=utf-8",
+            success: function (result) {
+                debugger;
+
+                alert("User Status Change Successfully")
+
+            },
+            error: function (ex) {
+                alert("Please Try Again Some Time Later");
+            }
+        });
+    }
+
+</script>
+
+</html>

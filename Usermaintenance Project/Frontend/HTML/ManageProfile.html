@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Profile</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+
+</head>
+<style>
+    fieldset {
+        width: 500px;
+        margin: 0 auto;
+        height: max-content;
+        padding-bottom: 20px;
+        margin-bottom: 40px;
+        margin-top: 40px;
+    }
+
+    label {
+        display: inline-block;
+        width: 150px;
+        margin-top: 20px;
+
+    }
+
+    input {
+        display: inline-block;
+
+    }
+
+
+    .btn {
+        margin-left: 35%;
+        padding-left: 40px;
+    }
+
+    button {
+        margin-left: 20px;
+        height: 5vh;
+        width: auto;
+        font-size: larger;
+        font-weight: bold;
+        box-shadow: 5px 5px lightgrey;
+    }
+
+    button:hover {
+        background: lightcoral;
+        color: white;
+        box-shadow: 5px 5px black;
+        transition: 0.5s;
+    }
+
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .navbar {
+        overflow: hidden;
+        background-color: #333;
+    }
+
+    .navbar a {
+        float: left;
+        font-size: 16px;
+        color: white;
+        text-align: center;
+        padding: 14px 16px;
+        text-decoration: none;
+    }
+
+    .dropdown {
+        float: left;
+        overflow: hidden;
+    }
+
+    .dropdown .dropbtn {
+        font-size: 16px;
+        border: none;
+        outline: none;
+        color: white;
+        padding: 14px 16px;
+        background-color: inherit;
+        font-family: inherit;
+        margin: 0;
+    }
+
+    .navbar a:hover,
+    .dropdown:hover .dropbtn {
+        background-color: red;
+    }
+
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #f9f9f9;
+        min-width: 160px;
+        box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+        z-index: 1;
+    }
+
+    .dropdown-content a {
+        float: none;
+        color: black;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+        text-align: left;
+    }
+
+    .dropdown-content a:hover {
+        background-color: #ddd;
+    }
+
+    .dropdown:hover .dropdown-content {
+        display: block;
+    }
+
+    * {
+        margin: 0;
+    }
+</style>
+
+<body>
+    <div id="bg-4">
+        <div class="navbar">
+            <a href="/HTML/index.html">Home</a>
+
+            <div class="dropdown">
+                <button class="dropbtn">Manage
+                    <i class="fa fa-caret-down"></i>
+                </button>
+                <div class="dropdown-content">
+                    <a href="/HTML/UserMaintainance.html">Geographical Infomation</a>
+                    <a href="/HTML/ManageUser.html">Users</a>
+
+                </div>
+            </div>
+            <div class="dropdown">
+                <button class="dropbtn">Account
+                    <i class="fa fa-caret-down"></i>
+                </button>
+                <div class="dropdown-content">
+                    <a href="/HTML/ManageProfile.html">Manage Profile</a>
+                    <a href="/HTML/ChangePassword.html">Change Password</a>
+
+                </div>
+            </div>
+            <a href="/HTML/Login.html" onclick="LogOut()">Log-out</a>
+        </div>
+    </div>
+    <!----------------------------------------------------------------------------------------------------------------------->
+    <form action="#">
+        <fieldset>
+            <legend>User Information</legend>
+            <label for="userid">UserId ● </label><input id="userid" type="text" readonly><br>
+            <label for="securtiyquestion">Security Question ● </label><select name="securtiyquestion"
+                id="securtiyquestion">
+                <option value="">--Please choose an option--</option>
+
+            </select><br>
+            <label for="answer">Answer●</label> <input id="answer" type="text">
+        </fieldset>
+
+        <fieldset>
+            <legend>User Information</legend>
+            <label for="name">Name ● </label><input id="name" type="text"><br>
+            <label for="DOB">Date Of Birth ● </label><input id="DOB" type="date"><br>
+            <label for="gender" class="genderLabel">Gender ● </label>
+            <label for="Male"><input id="Male" type="radio" value="Male" name="gender">Male</label>
+            <label for="Female"> <input id="Female" type="radio" value="Female" name="gender"> Female</label><br>
+            <label for="email">Email ●</label> <input id="email" type="email"><br>
+            <label for="street">Street ● </label><input id="street" type="text"><br>
+
+            <label for="country">Country ● </label>
+            <select name="country" id="country">
+                <option value="select">Select Country</option>
+            </select><br>
+            <label for="state">State ● </label>
+            <select name="state" id="state">
+                <option value="select">Select State</option>
+
+            </select><br>
+            <label for="city">City ● </label>
+            <select name="city" id="city">
+                <option value="select">Select City</option>
+            </select><br>
+
+            <label for="pincode">PinCode ● </label><input id="pincode" type="text"><br>
+            <label for="mobile">Mobile ● </label><input id="mobile" type="text"><br>
+        </fieldset>
+
+    </form>
+    <div class="btn">
+        <button id="update">Update</button>
+        <button id="reset">Reset</button>
+        <a href="/HTML/index.html"><button id="cancel">Cancel</button></a>
+    </div>
+</body>
+
+<script>
+    var type = localStorage.getItem('usertype');
+    if (type != "admin" && type != 'user') {
+        $('body').hide();
+    }
+    function LogOut() {
+        localStorage.clear();
+        window.location.replace('/HTML/Login.html');
+    }
+    $(async function () {
+        function hasNumber(n) {
+            return !isNaN(parseFloat(n)) && isFinite(n);
+        }
+
+        var URL = "https://localhost:7089/"
+        var userDetail;
+
+        var id = localStorage.getItem("userId");
+        var name = localStorage.getItem("name");
+
+        function getSecurtiyQuestion() {
+            $.ajax({
+                url: URL + "api/SignUp/GetAllUserSQ",
+                type: "Get",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                //this class returns a json object
+                cache: false,
+                success: function (result) {
+                    console.log(result);
+                    if ($("#securtiyquestion option").length == 1) {
+                        var optionString = "";
+                        for (var i = 0; i < result.length; i++) {
+                            optionString += "<option value= '" + result[i].userSQ + "'>" + result[i].userSQ + "</option>";
+                        }
+                        $('select[name="securtiyquestion"]').append(optionString);
+                    }
+                },
+                error: function (ex) {
+                    alert("Please wait");
+                }
+            });
+        }
+
+        function getUserDetail() {
+            return new Promise((resolve, reject) => {
+                $.ajax({
+                    url: URL + `api/Account/GetUserInfoByUserId?user=${id}`,
+                    type: "Get",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    cache: false,
+                    success: async function (result) {
+                        console.log(result);
+                        resolve(result);
+
+                    },
+                    error: function (ex) {
+                        alert("Please wait");
+                    }
+                })
+            })
+        }
+
+        getSecurtiyQuestion();
+        var UsersDetail = await getUserDetail();
+        $("#userid").val(id);
+        $("#name").val(name);
+        $(`#securtiyquestion option[value='${UsersDetail.userSQ}']`).prop('selected', true);
+        $('#answer').val(UsersDetail.userSA);
+        $(`input:radio[value=${UsersDetail.gender}]`).prop("checked", true);
+        $('#email').val(UsersDetail.email);
+        $('#street').val(UsersDetail.street);
+        $('#pincode').val(UsersDetail.pinCode);
+        $('#mobile').val(UsersDetail.mobile);
+
+        $('#country').append($('<option>', {
+            value: UsersDetail.countryId,
+            text: UsersDetail.country
+        }).prop('selected', true));
+
+        $('#state').append($('<option>', {
+            value: UsersDetail.stateId,
+            text: UsersDetail.state
+        }).prop('selected', true));
+
+        $('#city').append($('<option>', {
+            value: UsersDetail.cityId,
+            text: UsersDetail.city
+        }).prop('selected', true));
+
+        var currentDate = UsersDetail.dob.substring(0, 10);
+        $('#DOB').val(currentDate);
+
+        $('#reset').click(function () {
+            window.location.reload();
+        });
+
+
+        $('#country').click(function () {
+
+            $.ajax({
+                url: URL + "api/SignUp/GetAllActiveCountry",
+                type: "Get",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                //this class returns a json object
+                cache: false,
+                success: function (result) {
+                    // console.log(result);
+                    if ($("#country option").length < 3) {
+                        $(`#country option[value='${UsersDetail.countryId}']`).remove();
+                        var optionString = "";
+                        var j = 1;
+                        for (var i = 0; i < result.length; i++) {
+                            optionString += "<option value= '" + result[i].countryId + "'>" + result[i].name + "</option>";
+                        }
+                        $('select[name="country"]').append(optionString);
+                    }
+
+                    $('#state option').remove();
+                    $('#city option').remove();
+                    $('#state').append("<option value='select'>Select State</option>");
+                    $('#city').append("<option value='select'>Select City</option>");
+                },
+                error: function (ex) {
+                    alert("Please wait");
+                }
+            });
+
+        });
+
+        $('#state').click(function () {
+
+            if ($('#country').val() == 'select') {
+                alert("please select country first");
+            }
+            else {
+                var t = $("#country").val();
+                var x = { objId: t }
+                $.ajax({
+                    url: URL + "api/SignUp/GetAllActiveStatesByCountryId?countryId=" + t,
+                    type: "Get",
+                    contentType: "application/json; charset=utf-8",
+                    // data: JSON.stringify(x),
+                    dataType: "json",
+                    success: function (result) {
+                        // debugger;
+                        // console.log(result);
+                        if ($("#state option").length < 3) {
+                            $(`#state option[value='${UsersDetail.stateId}']`).remove();
+                            var optionString = "";
+                            for (var i = 0; i < result.length; i++) {
+                                optionString += "<option value= '" + result[i].stateId + "'>" + result[i].name + "</option>";
+                            }
+                            $('select[name="state"]').append(optionString);
+                        }
+                        $('#city option').remove();
+                        $('#city').append("<option value='select'>Select City</option>");
+                    },
+                    error: function (ex) {
+                        alert("Please Enter valid email password");
+                    }
+                });
+            }
+        })
+
+        $('#city').click(function () {
+
+            if ($('#state').val() == 'select') {
+                alert("please select state first");
+            }
+            else {
+                var t = $("#state").val();
+                var x = { objId: t }
+                $.ajax({
+                    url: URL + "api/SignUp/GetAllActiveCitiesByStateId?StateID=" + t,
+                    type: "Get",
+                    contentType: "application/json; charset=utf-8",
+                    // data: JSON.stringify(x),
+                    dataType: "json",
+                    success: function (result) {
+                        console.log(result);
+                        if ($("#city option").length < 3) {
+                            $(`#city option[value='${UsersDetail.cityId}']`).remove();
+                            var optionString = "";
+                            for (var i = 0; i < result.length; i++) {
+                                optionString += "<option value= '" + result[i].cityId + "'>" + result[i].name + "</option>";
+                            }
+                            $('select[name="city"]').append(optionString);
+                        }
+
+                    },
+                    error: function (ex) {
+                        alert("Please Enter valid email password");
+                    }
+                });
+            }
+        })
+
+        $('#update').click(function () {
+
+            var securtiyquestion = $('#securtiyquestion option:selected').val();
+            var answer = $('#answer').val();
+            var name = $('#name').val();
+            var DOB = $('#DOB').val();
+            var gender = $('input[name=gender]:checked').val();
+            var email = $('#email').val();
+            var street = $('#street').val();
+            var country = $('#country').val();
+            var state = $('#state').val();
+            var city = $('#city').val();
+            var pincode = $('#pincode').val();
+            var mobile = $('#mobile').val();
+
+            var signUpData = {
+                "UserId": id,
+                "UserSQ": securtiyquestion,
+                "UserSA": answer,
+                "Name": name,
+                "DOB": DOB,
+                "Gender": gender,
+                "Email": email,
+                "Street": street,
+                "Country": country,
+                "State": state,
+                "City": city,
+                "PinCode": pincode,
+                "Mobile": mobile
+            }
+            console.log(signUpData);
+            var todayDate = new Date().toISOString().slice(0, 10);
+
+            if (securtiyquestion == "" || securtiyquestion == undefined) {
+                alert("please select valid Security Question");
+
+            }
+            else if (answer == "") {
+                alert("Please Use Valid Security Answer");
+                $('#answer').focus();
+            }
+            else if (name == "") {
+                alert("Please use valid Name");
+                $('#name').focus();
+            }
+            else if (gender == "" || gender == undefined) {
+                alert("Please Select a gender");
+
+            }
+            else if (email == "" || !email.includes("@") || !email.includes(".")) {
+                alert("Please use valid email address");
+                $('#email').focus();
+            }
+            else if (DOB == undefined || DOB == "" || DOB >= todayDate) {
+                alert("Please use valid Date");
+                $('#DOB').focus();
+            }
+            else if (country == "select" || country == undefined) {
+                alert("Please Choose Valid Country");
+
+            }
+            else if (state == "select" || state == undefined) {
+                alert("Please Choose Valid Country");
+            }
+            else if (city == "select" || city == undefined) {
+                alert("Please Choose Valid City");
+            }
+            else if (street == "") {
+                alert("Please Choose Valid Street");
+            }
+            else if (pincode == "") {
+                alert("Please Select a Valid Pincode");
+            }
+            else if (mobile.length != 10 || !hasNumber(mobile)) {
+                alert('Please Use Ten Digit Valid Moblile Number');
+
+            }
+            else {
+                $.ajax({
+                    url: URL + "api/Account/UpdateUserData",
+                    type: "Post",
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(signUpData),
+                    success: function (result) {
+                        debugger;
+                        alert("Your Profile Updation is Completed Successfully")
+                        window.location.reload();
+                    },
+                    error: function (ex) {
+                        alert("Please Try Again Some Time Later");
+                    }
+                });
+            }
+        })
+
+    })
+</script>
+
+</html>
